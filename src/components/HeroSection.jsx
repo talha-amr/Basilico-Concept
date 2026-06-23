@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useGSAP } from '@gsap/react';
+import pastaFallback from '../assets/pasta.jpeg';
 
 gsap.registerPlugin(ScrollTrigger, useGSAP);
 
@@ -31,7 +32,7 @@ function HeroSection({ onLoadingProgress, onLoaded }) {
     for (let i = 1; i <= totalFrames; i++) {
       const img = new Image();
       const frameNum = i.toString().padStart(3, '0');
-      img.src = `/src/assets/sequence/ezgif-frame-${frameNum}.webp`;
+      img.src = `/sequence/ezgif-frame-${frameNum}.webp`;
 
       img.onload = () => {
         loadedCount++;
@@ -178,7 +179,7 @@ function HeroSection({ onLoadingProgress, onLoaded }) {
         {imagesLoaded ? (
           <canvas ref={canvasRef}></canvas>
         ) : (
-          <img src="/src/assets/pasta.jpeg" alt="Cinematic Pasta" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+          <img src={pastaFallback} alt="Cinematic Pasta" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
         )}
       </div>
 
