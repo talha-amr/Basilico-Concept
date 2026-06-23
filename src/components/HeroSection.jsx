@@ -5,7 +5,7 @@ import { useGSAP } from '@gsap/react';
 
 gsap.registerPlugin(ScrollTrigger, useGSAP);
 
-function HeroSection() {
+function HeroSection({ onLoadingProgress, onLoaded }) {
   const container = useRef(null);
   const textureRef = useRef(null);
   const visualRef = useRef(null);
@@ -35,11 +35,21 @@ function HeroSection() {
 
       img.onload = () => {
         loadedCount++;
-        if (loadedCount === totalFrames) setImagesLoaded(true);
+        const percent = Math.round((loadedCount / totalFrames) * 100);
+        onLoadingProgress?.(percent);
+        if (loadedCount === totalFrames) {
+          setImagesLoaded(true);
+          onLoaded?.();
+        }
       };
       img.onerror = () => {
         loadedCount++;
-        if (loadedCount === totalFrames) setImagesLoaded(true);
+        const percent = Math.round((loadedCount / totalFrames) * 100);
+        onLoadingProgress?.(percent);
+        if (loadedCount === totalFrames) {
+          setImagesLoaded(true);
+          onLoaded?.();
+        }
       };
       imagesRef.current.push(img);
     }

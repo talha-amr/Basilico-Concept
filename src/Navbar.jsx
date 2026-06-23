@@ -12,17 +12,17 @@ const Navbar = () => {
   const linksRef = useRef([]);
 
   useGSAP(() => {
-    // 1. Initial Load Animation
+    // 1. Initial Load Animation — delayed to start after loading screen exits
     gsap.fromTo(navRef.current, 
       { yPercent: -100, opacity: 0 }, 
-      { yPercent: 0, opacity: 1, duration: 1.5, ease: 'power3.out', delay: 1.8 }
+      { yPercent: 0, opacity: 1, duration: 1.5, ease: 'power3.out', delay: 2.5 }
     );
     
     // Stagger links
     if (linksRef.current.length > 0) {
       gsap.fromTo(linksRef.current,
         { y: -10, opacity: 0 },
-        { y: 0, opacity: 1, duration: 1, stagger: 0.1, ease: 'power2.out', delay: 2 }
+        { y: 0, opacity: 1, duration: 1, stagger: 0.1, ease: 'power2.out', delay: 2.8 }
       );
     }
 
