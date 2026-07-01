@@ -1,6 +1,6 @@
 import { useState, useCallback } from 'react';
 import { ReactLenis } from 'lenis/react';
-import Navbar from './Navbar';
+import Navbar from './components/Navbar';
 import HeroSection from './components/HeroSection';
 import CinematicScroll from './components/CinematicScroll';
 import AboutSection from './components/AboutSection';
