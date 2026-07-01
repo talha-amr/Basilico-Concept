@@ -129,7 +129,7 @@ export default function GallerySection() {
         position: 'relative',
         width: '100%',
         backgroundColor: '#060907',
-        padding: '16vh 6vw',
+        padding: '16vh 0',
         zIndex: 20,
         overflow: 'hidden',
       }}
@@ -149,25 +149,25 @@ export default function GallerySection() {
         .gallery-view-btn {
           display: inline-flex;
           align-items: center;
-          gap: 0.75rem;
-          padding: 1.1rem 3.2rem;
-          font-size: 0.78rem;
+          gap: 0.75vw;
+          padding: 1.1vw 3.2vw;
+          font-size: 0.75vw;
           text-transform: uppercase;
-          letter-spacing: 0.25em;
+          letter-spacing: 0.25vw;
           font-family: 'Inter', sans-serif;
           font-weight: 400;
           cursor: pointer;
-          border: 1px solid rgba(14, 32, 21, 0.9);
+          border: 0.1vw solid rgba(14, 32, 21, 0.9);
           background: rgba(14, 32, 21, 0.55);
           color: #EDEDED;
-          border-radius: 1px;
+          border-radius: 0.1vw;
           backdrop-filter: blur(12px);
           -webkit-backdrop-filter: blur(12px);
           position: relative;
           overflow: hidden;
           transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
           text-decoration: none;
-          box-shadow: 0 0 30px rgba(14, 32, 21, 0.4), inset 0 0 20px rgba(14, 32, 21, 0.2);
+          box-shadow: 0 0 2vw rgba(14, 32, 21, 0.4), inset 0 0 1.5vw rgba(14, 32, 21, 0.2);
         }
         .gallery-view-btn::before {
           content: '';
@@ -180,23 +180,17 @@ export default function GallerySection() {
         .gallery-view-btn:hover::before {
           opacity: 1;
         }
-        .gallery-view-btn:hover {
-          border-color: rgba(14, 32, 21, 1);
-          transform: translateY(-2px);
-          box-shadow: 0 8px 40px rgba(14, 32, 21, 0.6), 0 0 60px rgba(14, 32, 21, 0.3), inset 0 0 30px rgba(14, 32, 21, 0.3);
-          color: #c4a47c;
-        }
-        .gallery-view-btn .btn-text {
+        .btn-text, .btn-arrow {
           position: relative;
-          z-index: 1;
+          z-index: 2;
         }
-        .gallery-view-btn .btn-arrow {
-          position: relative;
-          z-index: 1;
-          transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+        .btn-arrow svg {
+          width: 1vw;
+          height: 1vw;
+          transition: transform 0.4s ease;
         }
-        .gallery-view-btn:hover .btn-arrow {
-          transform: translateX(5px);
+        .gallery-view-btn:hover .btn-arrow svg {
+          transform: translateX(0.3vw);
         }
         @media (max-width: 768px) {
           .gallery-row { flex-direction: column; gap: 4vh; }
@@ -206,6 +200,22 @@ export default function GallerySection() {
           .gallery-img-3 { flex: 0 0 100% !important; width: 100%; margin-left: 0 !important; aspect-ratio: 4/3 !important; }
           .gallery-img-4 { flex: 0 0 100% !important; width: 100%; margin-top: 0 !important; margin-right: 0 !important; }
           .gallery-section { padding: 10vh 6vw !important; }
+          .gallery-view-btn {
+            gap: 0.75rem;
+            padding: 1.1rem 3.2rem;
+            font-size: 0.78rem;
+            letter-spacing: 0.25rem;
+            border-width: 1px;
+            border-radius: 1px;
+            box-shadow: 0 0 30px rgba(14, 32, 21, 0.4), inset 0 0 20px rgba(14, 32, 21, 0.2);
+          }
+          .btn-arrow svg {
+            width: 1rem;
+            height: 1rem;
+          }
+          .gallery-view-btn:hover .btn-arrow svg {
+            transform: translateX(0.3rem);
+          }
         }
       `}</style>
 
@@ -275,45 +285,17 @@ export default function GallerySection() {
           zIndex: 1,
         }}
       />
-
-      <div style={{ maxWidth: '1400px', margin: '0 auto', position: 'relative', zIndex: 2 }}>
-
+      <div className="container" style={{ position: 'relative', zIndex: 2 }}>
         {/* Header */}
         <div
           className="gallery-header"
           style={{ marginBottom: '14vh', display: 'flex', flexDirection: 'column', alignItems: 'center' }}
         >
-          <span
-            style={{
-              display: 'block',
-              textTransform: 'uppercase',
-              fontFamily: "'Inter', sans-serif",
-              color: '#c4a47c',
-              letterSpacing: '0.45em',
-              fontSize: '0.75rem',
-              marginBottom: '1.5rem',
-            }}
-          >
+          <span className="gallery-label">
             A Feast for the Eyes
           </span>
-          <div
-            style={{
-              width: '2rem',
-              height: '1px',
-              backgroundColor: 'rgba(196, 164, 124, 0.4)',
-              marginBottom: '1.5rem',
-            }}
-          />
-          <h2
-            style={{
-              fontFamily: "'Cinzel', serif",
-              color: '#EDEDED',
-              fontSize: 'clamp(2.5rem, 4vw, 4rem)',
-              fontWeight: 400,
-              textShadow: '0 4px 20px rgba(0,0,0,0.5)',
-              textAlign: 'center',
-            }}
-          >
+          <div className="gallery-divider" />
+          <h2 className="gallery-heading" style={{ color: '#EDEDED', textShadow: '0 4px 20px rgba(0,0,0,0.5)', textAlign: 'center' }}>
             The Culinary Canvas
           </h2>
         </div>

@@ -106,7 +106,7 @@ const Navbar = () => {
 
   return (
     <nav ref={navRef} className="navbar">
-      <div className="navbar-container">
+      <div className="container navbar-container">
         <a href="/" className="navbar-brand">
           <img src={logo} alt="Basilico By Sara" className="navbar-logo" />
         </a>

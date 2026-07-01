@@ -187,15 +187,17 @@ function HeroSection({ onLoadingProgress, onLoaded }) {
       <div ref={overlayRef} className="hero-overlay"></div>
 
       {/* Centered Content */}
-      <div ref={contentRef} className="hero-content">
-        <div className="hero-logo font-serif">BASILICO</div>
-        <h1 ref={headingRef} className="hero-heading" style={{ opacity: 0 }}>Crafted with Elegance.</h1>
-        <p ref={subtextRef} className="hero-subtext" style={{ opacity: 0 }}>
-          A journey into profound taste and atmosphere. Discover the essence of Italian culinary tradition.
-        </p>
-        <div className="hero-actions">
-          <a ref={btn1Ref} href="#" className="btn btn-primary font-serif" style={{ opacity: 0 }}>Book a Table</a>
-          <a ref={btn2Ref} href="#" className="btn btn-secondary font-serif" style={{ opacity: 0 }}>Discover Menu</a>
+      <div className="container" style={{ position: 'relative', zIndex: 5 }}>
+        <div ref={contentRef} className="hero-content">
+          <div className="hero-logo font-serif">BASILICO</div>
+          <h1 ref={headingRef} className="hero-heading" style={{ opacity: 0 }}>Crafted with Elegance.</h1>
+          <p ref={subtextRef} className="hero-subtext" style={{ opacity: 0 }}>
+            A journey into profound taste and atmosphere. Discover the essence of Italian culinary tradition.
+          </p>
+          <div className="hero-actions">
+            <a ref={btn1Ref} href="#" className="btn btn-primary font-serif" style={{ opacity: 0 }}>Book a Table</a>
+            <a ref={btn2Ref} href="#" className="btn btn-secondary font-serif" style={{ opacity: 0 }}>Discover Menu</a>
+          </div>
         </div>
       </div>
     </main>

@@ -65,108 +65,37 @@ export default function AboutSection() {
         overflow: 'hidden',
         zIndex: 20,
         backgroundColor: '#060907', // Very subtle dark tone variation
-        padding: '6vh', // GUARANTEED padding explicitly in styles, independent of Tailwind
+        padding: '6vh 0', // Changed to only vertical padding, horizontal handled by container
       }}
     >
       {/* Maximum breathing room horizontally */}
-      <div 
-        style={{
-          maxWidth: '1400px',
-          margin: '0 auto',
-          position: 'relative',
-          zIndex: 10,
-          width: '100%'
-        }}
-      >
+      <div className="container" style={{ position: 'relative', zIndex: 10 }}>
         
-        {/* Asymmetrical flex layout guaranteed by inline styles */}
-        <div 
-          style={{
-            display: 'flex',
-            flexWrap: 'wrap',
-            alignItems: 'flex-start',
-            justifyContent: 'space-between',
-            gap: '4rem',
-            width: '100%'
-          }}
-        >
+        {/* Asymmetrical flex layout using class */}
+        <div className="about-layout">
           
           {/* ----- LEFT: TEXT CONTENT ----- */}
-          <div
-            ref={textContainerRef}
-            style={{
-              width: '100%',
-              maxWidth: '500px',
-              display: 'flex',
-              flexDirection: 'column',
-              flex: '1 1 40%',
-            }}
-          >
+          <div ref={textContainerRef} className="about-text-container">
             {/* Label */}
-            <span
-              style={{
-                display: 'block',
-                textTransform: 'uppercase',
-                fontFamily: "'Inter', sans-serif",
-                color: '#c4a47c',
-                letterSpacing: '0.45em',
-                fontSize: '0.75rem',
-                marginBottom: '2.5rem'
-              }}
-            >
+            <span className="about-label">
               Our Story
             </span>
 
             {/* Micro divider */}
-            <div
-              style={{ 
-                width: '3rem', 
-                height: '1px', 
-                backgroundColor: 'rgba(196, 164, 124, 0.4)',
-                marginBottom: '2.5rem'
-              }}
-            />
+            <div className="about-divider" />
 
             {/* Heading */}
-            <h2
-              style={{
-                fontFamily: "'Cinzel', serif",
-                color: '#EDEDED',
-                fontSize: 'clamp(2.5rem, 4.5vw, 4.5rem)',
-                textShadow: '0 4px 20px rgba(0,0,0,0.5)',
-                lineHeight: 1.1,
-                marginBottom: '3rem',
-                fontWeight: 400
-              }}
-            >
+            <h2 className="about-heading" style={{ color: '#EDEDED', textShadow: '0 4px 20px rgba(0,0,0,0.5)', marginBottom: '3rem' }}>
               Fine Dining,<br />Redefined
             </h2>
 
             {/* Paragraph */}
-            <p
-              style={{
-                fontFamily: "'Inter', sans-serif",
-                fontWeight: 300,
-                color: 'rgba(237, 237, 237, 0.75)',
-                fontSize: 'clamp(0.95rem, 1.1vw, 1.05rem)',
-                lineHeight: 2.1,
-                marginBottom: '3.5rem'
-              }}
-            >
+            <p className="about-subtext" style={{ color: 'rgba(237, 237, 237, 0.75)', marginBottom: '3.5rem' }}>
               “Born from Sara’s culinary journey through Italy, Basilico is more than a restaurant — it’s a love story told through food. Each dish carries echoes of cobblestone streets, Tuscan kitchens, and the warmth of Italian hospitality. Trained at ICIF, Sara brings authentic European flavours to Lahore, blending tradition with her own creative soul.”
             </p>
 
             {/* Optional Small Quote */}
-            <p
-              style={{
-                fontFamily: "'Cinzel', serif",
-                fontStyle: 'italic',
-                fontWeight: 300,
-                color: 'rgba(196, 164, 124, 0.9)',
-                fontSize: 'clamp(1.1rem, 1.3vw, 1.25rem)',
-                lineHeight: 1.6
-              }}
-            >
+            <p className="about-quote" style={{ color: 'rgba(196, 164, 124, 0.9)' }}>
               “Cooking is memory, emotion, and craft — plated with intention.”
             </p>
           </div>

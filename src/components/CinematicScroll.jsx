@@ -48,57 +48,97 @@ export default function CinematicScroll() {
 
   useGSAP(
     () => {
-      const track = trackRef.current;
-      const bgs   = bgRefs.current;
+      let mm = gsap.matchMedia();
 
-      // Pre-compute scroll distance once — avoids recalculating in every scrub callback
-      const scrollDist = (slides.length - 1) * window.innerWidth;
+      // --- DESKTOP (Horizontal Scroll) ---
+      mm.add("(min-width: 769px)", () => {
+        const track = trackRef.current;
+        const bgs   = bgRefs.current;
+        const scrollDist = (slides.length - 1) * window.innerWidth;
 
-      /* ── Main horizontal scroll: pin + drive xPercent ── */
-      const tl = gsap.timeline({
-        scrollTrigger: {
-          trigger: containerRef.current,
-          pin: true,
-          scrub: 1.6,
-          start: "top top",
-          end: `+=${scrollDist}`,
-          invalidateOnRefresh: true,
-          anticipatePin: 1,
-          // Refresh recomputes scrollDist when viewport resizes
-          onRefresh: (self) => {
-            const newDist = (slides.length - 1) * window.innerWidth;
-            self.end = self.start + newDist;
-          },
-        },
-      });
-
-      /* Move track left so all 4 slides are visible in sequence */
-      tl.to(track, {
-        xPercent: -((slides.length - 1) * 25), // -75% for 4 slides
-        ease: "none",
-      });
-
-      /* ── SINGLE shared bg-zoom tween for ALL bgs ──
-         Previously: 4 separate ScrollTrigger instances = 4 scroll listeners.
-         Now: one gsap.to([all bgs]) = 1 listener for identical animation. */
-      const validBgs = bgs.filter(Boolean);
-      if (validBgs.length > 0) {
-        gsap.fromTo(
-          validBgs,
-          { scale: 1.0 },
-          {
-            scale: 1.08,          // reduced from 1.1 → less GPU texture memory
-            ease: "none",
-            scrollTrigger: {
-              trigger: containerRef.current,
-              start: "top top",
-              end: `+=${scrollDist}`,
-              scrub: 2.5,
-              invalidateOnRefresh: true,
+        const tl = gsap.timeline({
+          scrollTrigger: {
+            trigger: containerRef.current,
+            pin: true,
+            scrub: 1.6,
+            start: "top top",
+            end: `+=${scrollDist}`,
+            invalidateOnRefresh: true,
+            anticipatePin: 1,
+            onRefresh: (self) => {
+              const newDist = (slides.length - 1) * window.innerWidth;
+              self.end = self.start + newDist;
             },
-          }
-        );
-      }
+          },
+        });
+
+        tl.to(track, {
+          xPercent: -((slides.length - 1) * 25), // -75% for 4 slides
+          ease: "none",
+        });
+
+        const validBgs = bgs.filter(Boolean);
+        if (validBgs.length > 0) {
+          gsap.fromTo(
+            validBgs,
+            { scale: 1.0 },
+            {
+              scale: 1.08,
+              ease: "none",
+              scrollTrigger: {
+                trigger: containerRef.current,
+                start: "top top",
+                end: `+=${scrollDist}`,
+                scrub: 2.5,
+                invalidateOnRefresh: true,
+              },
+            }
+          );
+        }
+      });
+
+      // --- MOBILE (Vertical Parallax Fade) ---
+      mm.add("(max-width: 768px)", () => {
+        const bgs = bgRefs.current;
+        const textContainers = gsap.utils.toArray('.cinematic-text-content');
+
+        bgs.forEach((bg) => {
+          if (!bg) return;
+          // Simple parallax for each image
+          gsap.fromTo(bg,
+            { scale: 1.0, yPercent: 0 },
+            {
+              scale: 1.15,
+              yPercent: 10,
+              ease: "none",
+              scrollTrigger: {
+                trigger: bg.closest('.cinematic-slide'),
+                start: "top bottom",
+                end: "bottom top",
+                scrub: true,
+              }
+            }
+          );
+        });
+
+        textContainers.forEach((text) => {
+          gsap.fromTo(text, 
+            { opacity: 0, y: 50 },
+            {
+              opacity: 1,
+              y: 0,
+              duration: 1.2,
+              ease: "power3.out",
+              scrollTrigger: {
+                trigger: text.closest('.cinematic-slide'),
+                start: "top 75%", // Trigger when slide hits 75% of viewport height
+                toggleActions: "play none none reverse",
+              }
+            }
+          );
+        });
+      });
+
     },
     { scope: containerRef }
   );
@@ -109,15 +149,15 @@ export default function CinematicScroll() {
       className="card-panel"
       style={{ background: "#050806", width: "100%", position: "relative", zIndex: 10 }}
     >
-      {/* Pinned viewport — GSAP pins this element */}
+      {/* Pinned viewport — GSAP pins this element on desktop */}
       <div
         ref={containerRef}
-        style={{ width: "100vw", height: "100vh", overflow: "hidden", position: "relative" }}
+        className="cinematic-container"
       >
-        {/* Film grain overlay — pointer-events:none, no mixBlendMode to avoid
-            forcing a compositing stencil on every scroll frame */}
+        {/* Film grain overlay */}
         <div
           aria-hidden="true"
+          className="cinematic-grain"
           style={{
             position: "absolute",
             inset: 0,
@@ -128,38 +168,21 @@ export default function CinematicScroll() {
             backgroundRepeat: "repeat",
             backgroundSize: "200px 200px",
             opacity: 0.035,
-            // Removed mixBlendMode: 'overlay' — it forces a full composite stencil
-            // on every scroll frame, wasting GPU bandwidth
           }}
         />
 
-        {/* Horizontal track — 400vw wide flex row */}
+        {/* Horizontal track on desktop, vertical on mobile */}
         <div
           ref={trackRef}
-          style={{
-            display: "flex",
-            width: `${slides.length * 100}vw`,
-            height: "100vh",
-            willChange: "transform",
-          }}
+          className="cinematic-track"
+          style={{ width: `${slides.length * 100}vw` }}
         >
           {slides.map((slide, i) => (
             <div
               key={slide.id}
-              style={{
-                position: "relative",
-                width: "100vw",
-                height: "100vh",
-                flexShrink: 0,
-                overflow: "hidden",
-                // contain: strict tells the browser this slide is paint-isolated.
-                // Slides that are off-screen skip layout, style, and paint entirely.
-                contain: "strict",
-              }}
+              className="cinematic-slide"
             >
-              {/* Full-screen background image — using <img> instead of background-image
-                  so the browser can more efficiently promote to GPU layer.
-                  Slide 0 is eager + high priority (above fold), rest are lazy. */}
+              {/* Full-screen background image */}
               <img
                 ref={(el) => (bgRefs.current[i] = el)}
                 src={slide.image}
@@ -168,6 +191,7 @@ export default function CinematicScroll() {
                 loading={i === 0 ? "eager" : "lazy"}
                 decoding="async"
                 fetchpriority={i === 0 ? "high" : "low"}
+                className="cinematic-bg-img"
                 style={{
                   position: "absolute",
                   top: "-8%",
@@ -182,7 +206,7 @@ export default function CinematicScroll() {
                 }}
               />
 
-              {/* Gradient: left-heavy for text, bottom for depth */}
+              {/* Gradient */}
               <div
                 aria-hidden="true"
                 style={{
@@ -195,73 +219,27 @@ export default function CinematicScroll() {
                 }}
               />
 
-              {/* Text content — bottom-left */}
-              <div
-                style={{
-                  position: "absolute",
-                  bottom: "11vh",
-                  left: "7vw",
-                  zIndex: 3,
-                  maxWidth: "500px",
-                }}
-              >
-                {/* Micro-label */}
-                <span
-                  style={{
-                    display: "block",
-                    fontSize: "0.6rem",
-                    letterSpacing: "0.38em",
-                    textTransform: "uppercase",
-                    color: "#c4a47c",
-                    fontFamily: "'Inter', sans-serif",
-                    fontWeight: 400,
-                    marginBottom: "0.85rem",
-                    opacity: 0.85,
-                  }}
-                >
-                  {slide.microlabel}
-                </span>
+              {/* Text content wrapper */}
+              <div className="container" style={{ position: 'absolute', bottom: '11vh', left: 0, right: 0, pointerEvents: 'none' }}>
+                <div className="cinematic-text-content" style={{ pointerEvents: 'auto', position: 'relative', bottom: 'auto' }}>
+                  {/* Micro-label */}
+                  <span className="cinematic-label">
+                    {slide.microlabel}
+                  </span>
 
-                {/* Gold divider */}
-                <div
-                  style={{
-                    width: "2rem",
-                    height: "1px",
-                    background: "#c4a47c",
-                    marginBottom: "1rem",
-                    opacity: 0.6,
-                  }}
-                />
+                  {/* Gold divider */}
+                  <div className="cinematic-divider" />
 
-                {/* Heading */}
-                <h2
-                  style={{
-                    fontFamily: "'Cinzel', serif",
-                    fontSize: "clamp(2rem, 3.8vw, 3.8rem)",
-                    fontWeight: 400,
-                    lineHeight: 1.1,
-                    letterSpacing: "0.04em",
-                    color: "#EDEDED",
-                    marginBottom: "1rem",
-                    textShadow: "0 4px 30px rgba(5,8,6,0.7)",
-                  }}
-                >
-                  {slide.heading}
-                </h2>
+                  {/* Heading */}
+                  <h2 className="cinematic-heading">
+                    {slide.heading}
+                  </h2>
 
-                {/* Subheading */}
-                <p
-                  style={{
-                    fontFamily: "'Inter', sans-serif",
-                    fontSize: "clamp(0.82rem, 1.05vw, 0.98rem)",
-                    fontWeight: 300,
-                    lineHeight: 1.8,
-                    letterSpacing: "0.03em",
-                    color: "rgba(237,237,237,0.65)",
-                  }}
-                >
-                  {slide.subheading}
-                </p>
+                  {/* Subheading */}
+                  <p className="cinematic-subheading">
+                    {slide.subheading}
+                  </p>
+                </div>
               </div>
 
               {/* Slide counter — bottom right */}

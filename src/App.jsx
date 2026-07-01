@@ -5,6 +5,7 @@ import HeroSection from './components/HeroSection';
 import CinematicScroll from './components/CinematicScroll';
 import AboutSection from './components/AboutSection';
 import GallerySection from './components/GallerySection';
+import Footer from './components/Footer';
 import LoadingScreen from './components/LoadingScreen';
 import './index.css';
 
@@ -51,6 +52,9 @@ function App() {
           
           {/* Awwwards-level Gallery Section */}
           <GallerySection />
+          
+          {/* Site Footer */}
+          <Footer />
         </div>
       </ReactLenis>
     </>
